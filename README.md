@@ -121,6 +121,29 @@ Los componentes principales son:
 
 ---
 
+## Agentes del Sistema
+
+El asistente funciona mediante la colaboración de tres agentes especializados. Cada uno es un workflow de n8n con un propósito claro, y se comunican entre sí usando los nodos `toolWorkflow`.
+
+### 🤖 Asistente Personal WSP (Agente Principal)
+![Asistente Personal WSP](docs/imagenes/asistente_principal.png)
+
+Es el cerebro de la automatización. Recibe los mensajes de WhatsApp (texto o audio transcrito), mantiene la memoria de la conversación y decide qué hacer. Si necesita enviar un correo o gestionar una reunión, invoca a los sub‑agentes correspondientes. También consulta la base de contactos en Google Sheets cuando se requiere un email o teléfono. Su respuesta final se envía de vuelta al usuario por WhatsApp.
+
+### 📧 Agente Gmail
+![Agente Gmail](docs/imagenes/agente_gmail.png)
+
+Este workflow se encarga de todas las tareas relacionadas con el correo electrónico. Puede **enviar mensajes** personalizados, **buscar correos** con filtros avanzados y **aplicar etiquetas** para organizar la bandeja de entrada. Recibe instrucciones en lenguaje natural y las ejecuta usando las herramientas nativas de Gmail.
+
+### 📅 Agente Calendario
+![Agente Calendario](docs/imagenes/agente_calendario.png)
+
+Gestiona la agenda de Google Calendar. Crea eventos con la duración adecuada, busca reuniones existentes, cancela o modifica citas. Es capaz de interpretar fechas y horarios en lenguaje natural y traducirlos a los parámetros correctos de la API.
+
+Todos los agentes están construidos con nodos **LangChain Agent** y usan **Google Gemini** como modelo de lenguaje, lo que les permite entender instrucciones en español y actuar de forma autónoma.
+
+
+
 ## Diagrama de Secuencia (Interacción entre componentes)
 
 ![Diagrama de secuencia](docs/imagenes/secuencia.png)
