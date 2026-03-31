@@ -125,7 +125,7 @@ El diagrama muestra el orden de llamadas cuando un usuario pide “enviar correo
 
 ### 1. Arquitectura en Capas
 
-![Arquitectura en capas](docs/imagenes/arquitectura.png)
+![](icon_repo/arquitectura_capas.png)
 
 - **Capa de Interacción:** WhatsApp (entrada/salida).
 - **Capa de Orquestación:** n8n workflows (agente principal, sub‑agentes, memoria).
@@ -135,7 +135,7 @@ El diagrama muestra el orden de llamadas cuando un usuario pide “enviar correo
 
 ### 2. Diagrama de Componentes
 
-![Diagrama de componentes](docs/imagenes/diagrama_componentes.png)
+![](icon_repo/diagrama_componentes.png)
 
 Los componentes principales son:
 
@@ -157,28 +157,6 @@ Los componentes principales son:
 | `workflows/Asistente Personal WSP.json` | Workflow principal que integra WhatsApp, LLM, memoria y sub‑agentes. |
 | `docs/imagenes/` | Diagramas de arquitectura, flujos y capturas. |
 | `docs/configuracion.md` | Guía paso a paso para configurar credenciales y conectar las cuentas. |
-
-
-
-## Configuración y Uso
-
-1. **Importar los workflows** en una instancia de n8n (versión 1.0 o superior).
-2. **Configurar credenciales**:
-   - Google Calendar OAuth2 (para el calendario de Dayanna).
-   - Gmail OAuth2.
-   - Google Sheets OAuth2 (para la hoja de contactos).
-   - WhatsApp (token de Meta, número de teléfono).
-   - Google Gemini (API key).
-3. **Ajustar IDs de workflows** en los nodos `toolWorkflow` para que apunten a los IDs correctos después de importar.
-4. **Verificar la hoja de contactos**: debe estar pública o compartida con la cuenta que usa Google Sheets.
-5. **Activar los workflows** y probar con mensajes de WhatsApp.
-
-
-
-## Registro y Auditoría
-
-Aunque los workflows actuales no incluyen un log externo, n8n guarda todas las ejecuciones en su base de datos. Puedes consultar el historial de ejecuciones de cada workflow para auditar qué acciones se realizaron, con qué datos y en qué momento. Además, cada acción en Gmail, Calendar y Sheets queda registrada en sus respectivas aplicaciones.
-
 
 
 ## Beneficios Finales
