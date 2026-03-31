@@ -25,8 +25,8 @@ Todo el orquestador está construido con **n8n** (workflow automation), aprovech
 
 En el día a día de un emprendedor, las tareas administrativas fragmentadas consumen tiempo valioso. Por ejemplo:
 
-- Recibir un mensaje por WhatsApp solicitando “agenda una reunión con Juan para mañana a las 10 a.m.” obliga a abrir Calendar manualmente.
-- Atender un mensaje “envía el informe a María” requiere buscar el contacto, redactar, adjuntar archivos y enviar desde Gmail.
+- Recibir un mensaje por WhatsApp solicitando “agenda una reunión con tal persona para mañana a las 10 a.m.” obliga a abrir Calendar manualmente.
+- Atender un mensaje “envía el informe a la persona requerida” requiere buscar el contacto, redactar, adjuntar archivos y enviar desde Gmail.
 - Coordinar agendas con invitados externos implica buscar sus correos en la base de contactos y luego crear el evento.
 
 Este flujo manual es repetitivo, propenso a errores y no deja trazabilidad. La persona depende de recordar dónde está cada dato y de ejecutar pasos en diferentes aplicaciones.
