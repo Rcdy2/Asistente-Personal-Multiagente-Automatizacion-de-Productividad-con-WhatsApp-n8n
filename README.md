@@ -38,17 +38,16 @@ Este flujo manual es repetitivo, propenso a errores y no deja trazabilidad. La p
 El diagrama AS-IS muestra el flujo manual típico:
 
 1. El usuario escribe un mensaje en WhatsApp.
-2. La persona (asistente o el mismo emprendedor) interpreta la solicitud.
+2. La persona interpreta la solicitud.
 3. Abre la aplicación correspondiente (Gmail, Calendar, Sheets) y busca la información necesaria.
 4. Copia y pega datos, redacta, adjunta, confirma.
 5. Responde por WhatsApp confirmando la acción.
 
 **Problemas identificados:**
-
 - Tiempo elevado por solicitud (5‑10 minutos en promedio).
 - Errores comunes: adjuntar archivo equivocado, usar correo erróneo, olvidar confirmar.
 - Sin registro centralizado de lo que se hizo.
-- Proceso no escalable; la persona se convierte en cuello de botella.
+- Proceso no escalable; la persona se convierte en el cuello de botella.
 
 ---
 
@@ -59,16 +58,15 @@ Con el asistente IA, el flujo se transforma:
 1. El usuario envía un mensaje de WhatsApp (texto o audio).
 2. El **WhatsApp Trigger** recibe el mensaje y lo envía al agente principal.
 3. El agente (con LLM Gemini) interpreta la intención y decide qué herramienta usar:
-   - Si es un correo → invoca al **sub‑agente Gmail**.
-   - Si es un evento → invoca al **sub‑agente Calendar**.
-   - Si necesita un contacto → consulta la **Google Sheets**.
+   - Si es un correo invoca al **sub‑agente Gmail**.
+   - Si es un evento invoca al **sub‑agente Calendar**.
+   - Si necesita un contacto consulta la **Google Sheets**.
 4. Las herramientas ejecutan las operaciones en las APIs reales.
 5. El agente genera una respuesta en lenguaje natural y la envía de vuelta por WhatsApp.
 
 **Beneficios obtenidos:**
-
 - Respuesta inmediata (segundos en lugar de minutos).
-- Cero errores de personalización o adjuntos.
+- Cero errores de personalización.
 - Trazabilidad completa: cada acción queda registrada en los logs de n8n y en las propias aplicaciones.
 - Proceso independiente de una persona; escalable a cualquier volumen.
 
@@ -86,17 +84,17 @@ La imagen integra ambos flujos mostrando la reducción de pasos manuales y la el
 
 El asistente funciona mediante la colaboración de tres agentes especializados. Cada uno es un workflow de n8n con un propósito claro, y se comunican entre sí usando los nodos `toolWorkflow`.
 
-### 🤖 Asistente Personal WSP (Agente Principal)
+### Asistente Personal WSP (Agente Principal)
 ![Asistente Personal WSP](docs/imagenes/asistente_principal.png)
 
 Es el cerebro de la automatización. Recibe los mensajes de WhatsApp (texto o audio transcrito), mantiene la memoria de la conversación y decide qué hacer. Si necesita enviar un correo o gestionar una reunión, invoca a los sub‑agentes correspondientes. También consulta la base de contactos en Google Sheets cuando se requiere un email o teléfono. Su respuesta final se envía de vuelta al usuario por WhatsApp.
 
-### 📧 Agente Gmail
+### Agente Gmail
 ![Agente Gmail](docs/imagenes/agente_gmail.png)
 
 Este workflow se encarga de todas las tareas relacionadas con el correo electrónico. Puede **enviar mensajes** personalizados, **buscar correos** con filtros avanzados y **aplicar etiquetas** para organizar la bandeja de entrada. Recibe instrucciones en lenguaje natural y las ejecuta usando las herramientas nativas de Gmail.
 
-### 📅 Agente Calendario
+### Agente Calendario
 ![Agente Calendario](docs/imagenes/agente_calendario.png)
 
 Gestiona la agenda de Google Calendar. Crea eventos con la duración adecuada, busca reuniones existentes, cancela o modifica citas. Es capaz de interpretar fechas y horarios en lenguaje natural y traducirlos a los parámetros correctos de la API.
