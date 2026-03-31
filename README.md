@@ -19,7 +19,7 @@ Todo el orquestador está construido con **n8n** (workflow automation), aprovech
 - Soporte para transcripción de notas de voz (audio) mediante Gemini.
 - Registro de conversación (memoria) para mantener contexto entre mensajes.
 
----
+
 
 ## Problemática
 
@@ -31,7 +31,7 @@ En el día a día de un emprendedor, las tareas administrativas fragmentadas con
 
 Este flujo manual es repetitivo, propenso a errores y no deja trazabilidad. La persona depende de recordar dónde está cada dato y de ejecutar pasos en diferentes aplicaciones.
 
----
+
 
 ## Proceso actual (AS-IS)
 
@@ -51,7 +51,7 @@ El diagrama AS-IS muestra el flujo manual típico:
 - Sin registro centralizado de lo que se hizo.
 - Proceso no escalable; la persona se convierte en el cuello de botella.
 
----
+
 
 ## Proceso automatizado (TO-BE)
 
@@ -74,7 +74,7 @@ Con el asistente IA, el flujo se transforma:
 - Trazabilidad completa: cada acción queda registrada en los logs de n8n y en las propias aplicaciones.
 - Proceso independiente de una persona; escalable a cualquier volumen.
 
----
+
 
 ## Comparación de mejoras en los procesos
 
@@ -82,7 +82,7 @@ Con el asistente IA, el flujo se transforma:
 
 La imagen integra ambos flujos mostrando la reducción de pasos manuales y la eliminación del trabajo repetitivo. El asistente centraliza todas las decisiones y la ejecución, liberando al usuario para tareas de mayor valor.
 
----
+
 
 ## Agentes del Sistema
 
@@ -111,14 +111,14 @@ Todos los agentes están construidos con nodos **LangChain Agent** y usan **Goog
 
 ![](icon_repo/DiagramaSecuencia.png)
 
-El diagrama muestra el orden de llamadas cuando un usuario pide “enviar correo a María con el informe”.  
-1. Usuario → WhatsApp → n8n.  
+El diagrama muestra el orden de llamadas cuando un usuario pide “enviar correo a una persona con el informe”.  
+1. Usuario - WhatsApp - n8n.  
 2. Agente principal interpreta, consulta contactos en Sheets, obtiene el email.  
 3. Llama al sub‑agente Gmail (vía `toolWorkflow`) con las instrucciones.  
 4. El sub‑agente utiliza el nodo `gmailTool` para enviar el correo.  
 5. Respuesta de confirmación retorna al agente principal y se envía al usuario.
 
----
+
 
 
 ## Arquitectura del Sistema
@@ -146,7 +146,7 @@ Los componentes principales son:
 - **Google Gemini Chat Model:** provee la inteligencia al agente.
 - **Memory Buffer:** mantiene el contexto de la conversación.
 
----
+
 
 ## Componentes – Estructura del Proyecto
 
@@ -158,7 +158,7 @@ Los componentes principales son:
 | `docs/imagenes/` | Diagramas de arquitectura, flujos y capturas. |
 | `docs/configuracion.md` | Guía paso a paso para configurar credenciales y conectar las cuentas. |
 
----
+
 
 ## Configuración y Uso
 
@@ -173,13 +173,13 @@ Los componentes principales son:
 4. **Verificar la hoja de contactos**: debe estar pública o compartida con la cuenta que usa Google Sheets.
 5. **Activar los workflows** y probar con mensajes de WhatsApp.
 
----
+
 
 ## Registro y Auditoría
 
 Aunque los workflows actuales no incluyen un log externo, n8n guarda todas las ejecuciones en su base de datos. Puedes consultar el historial de ejecuciones de cada workflow para auditar qué acciones se realizaron, con qué datos y en qué momento. Además, cada acción en Gmail, Calendar y Sheets queda registrada en sus respectivas aplicaciones.
 
----
+
 
 ## Beneficios Finales
 
