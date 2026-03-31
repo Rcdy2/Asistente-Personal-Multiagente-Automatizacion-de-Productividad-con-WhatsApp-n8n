@@ -2,7 +2,7 @@
 
 ## Descripción General
 
-Este proyecto implementa un asistente virtual inteligente para Dayanna Rocca, emprendedora y fundadora de una agencia de IA. El sistema permite interactuar por WhatsApp con un agente conversacional que, usando el modelo Gemini de Google, interpreta las instrucciones del usuario y ejecuta acciones en tres plataformas clave:
+Este proyecto implementa un asistente virtual inteligente para negocios o personas. El sistema permite interactuar por WhatsApp con un agente conversacional que, usando el modelo Gemini de Google, interpreta las instrucciones del usuario y ejecuta acciones en tres plataformas clave:
 
 - **Gmail:** enviar correos, buscar mensajes y aplicar etiquetas.
 - **Google Calendar:** crear, buscar, modificar y cancelar eventos.
