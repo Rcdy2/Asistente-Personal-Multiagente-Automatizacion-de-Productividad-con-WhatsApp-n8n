@@ -1,0 +1,270 @@
+{
+  "name": "Agente Calendario",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Instrucciones"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "19a2b33b-d0fa-49e9-a781-c49f9afa33e2",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Instrucciones }}",
+        "options": {
+          "systemMessage": "=Eres el agente encargado de gestionar los eventos en el calendario de google de Dayanna Rocca, un emprendedor fundador de una agencia de IA\nFecha y hora actual: {{ $now }} \nHerramientas disponibles\nPara completar tus tareas tienes acceso a las siguientes herramientas:\n1- Crear evento\nUsa esta herramienta para crear un evento. En base a las instrucciones, decide: \n- Hora de inicio y finalización (si no se especifica ninguna duración, asume un estándar de 30 minutos)\n- Invitados (direcciones de correo electrónicos de los invitados)\n- Summary (título del evento)\n2- Buscar evento\nUsa este herramienta para transformar las instrucciones de búsqueda en querys válidas para google calendar y encontrar los eventos que cumplan con los criterios de búsqueda.\nTambién usa esta herramienta para extraer los ID's de eventos para usarlas en cancelaciones / modificaciones\n3- Cancelar evento\nUsa esta herramienta para eliminar un evento una vez que se haya encontrado su ID\n4- Modificar evento\nUsa esta herramienta para actualizar los datos (hora de inicio/finalización, título, invitados...) de un evento, una vez que su ID haya sido localizada"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1206186a-cc32-4146-8cb7-8f7568068533",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "0018afea-3839-4941-87df-48824832cc3c",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "iZvLrDQKkEHZzuD4",
+          "name": "Google Gemini(PaLM) Api n8n02"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "roccacortezdayanna@gmail.com",
+          "mode": "list",
+          "cachedResultName": "roccacortezdayanna@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `Hora y Fecha de Inicio`, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `Hora y Fecha de Finalización`, 'string') }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('attendees0_Attendees', `Invitado`, 'string') }}"
+          ],
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', `Descripción `, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', `Titulo del evento`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        320
+      ],
+      "id": "52ea5c53-5547-49d9-8b98-b7d5b666763b",
+      "name": "Crear Evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "dQLteXcymL8Fa3KY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "roccacortezdayanna@gmail.com",
+          "mode": "list",
+          "cachedResultName": "roccacortezdayanna@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', `Fecha y Hora de Inicio para buscar eventos`, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', `Fecha y Hora de finalización para buscar eventos`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        320
+      ],
+      "id": "7a87f35c-2190-4bbf-9824-a05b133bc2c0",
+      "name": "Buscar Evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "dQLteXcymL8Fa3KY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "roccacortezdayanna@gmail.com",
+          "mode": "list",
+          "cachedResultName": "roccacortezdayanna@gmail.com"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', `ID del evento`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        320
+      ],
+      "id": "44df93b9-129e-4b14-92ef-f50ad4fc4357",
+      "name": "Cancelar Evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "dQLteXcymL8Fa3KY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "roccacortezdayanna@gmail.com",
+          "mode": "list",
+          "cachedResultName": "roccacortezdayanna@gmail.com"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', `ID del evento`, 'string') }}",
+        "updateFields": {
+          "attendeesUi": {
+            "values": {
+              "attendees": [
+                "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('attendees0_Attendees', ``, 'string') }}"
+              ]
+            }
+          },
+          "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `Fecha y hora de finalización`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        256
+      ],
+      "id": "293269e7-303c-4157-82a5-af2bd0167376",
+      "name": "Modificar Evento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "dQLteXcymL8Fa3KY",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancelar Evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modificar Evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Lima",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1953487e-0a3f-4c4f-a9ce-1c5c1c5b8525",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "83af5ede91c060c33f923d9414313d157b5054d4f584139d322e95913d816859"
+  },
+  "id": "DZRESRhz8XtKqfdQ",
+  "tags": []
+}

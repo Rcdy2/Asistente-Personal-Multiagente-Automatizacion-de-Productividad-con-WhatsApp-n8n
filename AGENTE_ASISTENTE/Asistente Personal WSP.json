@@ -1,0 +1,551 @@
+{
+  "name": "Asistente Personal WSP",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.content?.parts[0]?.text || $json.message?.text || $json.text }}",
+        "options": {
+          "systemMessage": "Eres el asistente personal de Dayanna Rocca, una emprendedora fundadora de una agencia de Inteligencia Artificial, quién realiza tareas manuales dentro de Google Sheets, Gmail y Google Calendar.\nTu tarea será recibir e interpretar sus instrucciones para elegir las herramientas adecuadas y automatizar las tareas dentro de estas plataformas\nHerramientas\nTienes acceso a las siguientes herramientas:\n1- Buscar contactos\n- Base de datos con nombres, teléfonos y correos electónicos de personas en la red de Dayanna\n- Úsala cuando se te pida encontrar información de contacto de una persona por nombre, o cuando la necesites para realizar alguna acción en otra plataforma (como enviar un correo o agendar una reunión)\n2- Agente Gmail\n- Agente que se encargará de realizar todas las acciones dentro de la plataforma de gmail como el envío, búsqueda o respuesta de correos\n- Tu input debe contener instrucciones claras y el agente se encargará de interpretarlas y procesarlas con las herramientas adecuadas\n- Para el envío de correos (en caso de que no se proporcione una dirección explícita), debes usar la herramienta \"buscar contactos\" primero para encontrar la dirección de correo electrónico de contactos\n3- Agente calendario \n- Agente que se encargará de todas las tareas dentro de google calendar como agendamientos, cancelaciones y modificación de reuniones\n- Tu input debe contener instrucciones claras y el agente se encargará de interpretarlas y procesarlas con las herramientas adecuadas\n- Para agendamientos con invitados (en caso de que no se proporcione una dirección explícita), debes usar la herramienta \"buscar contactos\" primero para encontrar la dirección de correo electrónico de contactos\" REGLA CRÍTICA DE FORMATO: No utilices nunca asteriscos (), guiones bajos (_) ni ningún tipo de formato Markdown en tus respuestas. Escribe siempre en texto plano. Por ejemplo, en lugar de escribir 'Nombre:', escribe simplemente 'Nombre:'."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        488,
+        152
+      ],
+      "id": "bec4efa0-48c7-42ad-b0db-92e27c06c5a1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        304,
+        376
+      ],
+      "id": "f2183306-6673-4d67-b79e-7f68f6c273b3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Tf8e1UHDheGZJNkB",
+          "name": "Google Gemini(PaLM) n8n04"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Datos detallados de contactos de la persona",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Qg268EfDvoFzJOvosPf1HprFFX1l_VLhvCycVA6wKuE/edit?gid=1496262987#gid=1496262987",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1496262987,
+          "mode": "list",
+          "cachedResultName": "Hoja1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Qg268EfDvoFzJOvosPf1HprFFX1l_VLhvCycVA6wKuE/edit#gid=1496262987"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Nombre",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        376
+      ],
+      "id": "6f0aa71d-b739-4930-b31b-4d677a3e36bf",
+      "name": "Contactos Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fpFglfbNPhKL0KOi",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Utiliza este Workflow SIEMPRE que el usuario mencione enviar un correo, buscar contactos o pedir información de Akane. Esta herramienta se conecta con Gmail y Google Sheets para obtener datos reales y enviar mensajes.",
+        "workflowId": {
+          "__rl": true,
+          "value": "wo3xoDBsOKz6pHPd",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/wo3xoDBsOKz6pHPd",
+          "cachedResultName": "Agente Gmail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Instrucciones": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Instrucciones', `Instrucciones de las tareas que se quieren llevar acabo dentro de Gmail`, 'string') }}"
+          },
+          "matchingColumns": [
+            "Instrucciones"
+          ],
+          "schema": [
+            {
+              "id": "Instrucciones",
+              "displayName": "Instrucciones",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        376
+      ],
+      "id": "1cb9f782-929f-4512-859e-7fdf292822e5",
+      "name": "Agente Gmail"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.messages[0].id }}",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        376
+      ],
+      "id": "69280559-1110-431b-9373-7b4b85c0cea5",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "description": "Usa este workflow para todas las tareas relacionadas con google Calendar",
+        "workflowId": {
+          "__rl": true,
+          "value": "DZRESRhz8XtKqfdQ",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/DZRESRhz8XtKqfdQ",
+          "cachedResultName": "Agente Calendario"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Instrucciones": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Instrucciones', `Instrucciones`, 'string') }}"
+          },
+          "matchingColumns": [
+            "Instrucciones"
+          ],
+          "schema": [
+            {
+              "id": "Instrucciones",
+              "displayName": "Instrucciones",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        376
+      ],
+      "id": "b15d8434-546f-44f3-92ff-c244e552ff31",
+      "name": "Agente Calendario"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3bfdfdd3-39cb-4e29-8656-c9dc2c722c76"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5871920d-0a52-4f58-b94d-0d6a298f51c7",
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "=audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -592,
+        152
+      ],
+      "id": "84f05b98-5eeb-4ba0-a92e-f42b5a9ed05a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        248
+      ],
+      "id": "0abd8233-952c-4166-87da-70c82a8def39",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "vCAOBlBOIIF6pE7H",
+          "name": "Google Gemini(PaLM) n8n05"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c7635e67-b235-455e-986d-1acfcfb436b7",
+              "name": "text",
+              "value": "={{ $json.messages[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        56
+      ],
+      "id": "ba983b99-8eae-4b55-aa2a-d7410c082116",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        152
+      ],
+      "id": "c8cc6f8b-e831-4cf5-83f8-4d6339e12c5f",
+      "name": "WhatsApp Trigger",
+      "webhookId": "bca915e9-2575-48e7-9285-446c49d94a20",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "kAjZXCoG8jcftYhe",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1023528837514180",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        152
+      ],
+      "id": "fb6d15a9-27fa-4885-92bf-378ea3020e86",
+      "name": "Send message",
+      "webhookId": "1e2c15c1-4e49-4be9-b405-a1b38ad4e882",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "Omjt0N1zVx39bD46",
+          "name": "WhatsApp send"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v21.0/{{ $json.messages[0].audio.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -368,
+        248
+      ],
+      "id": "308152ce-0373-4e3d-baa3-34757f4f4dc0",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "j5roQq1IIlulFILP",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -144,
+        248
+      ],
+      "id": "ba4d961b-54c2-4e12-a2f1-bc8728d3fddf",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "j5roQq1IIlulFILP",
+          "name": "Bearer Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contactos Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Calendario": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "077ede07-e9b1-4e09-bb1e-44b9f5bbb9fe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "83af5ede91c060c33f923d9414313d157b5054d4f584139d322e95913d816859"
+  },
+  "id": "kHrj6eidYBgXoVDW",
+  "tags": []
+}

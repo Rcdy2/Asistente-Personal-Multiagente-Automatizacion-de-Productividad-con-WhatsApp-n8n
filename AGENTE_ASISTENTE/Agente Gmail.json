@@ -1,0 +1,241 @@
+{
+  "name": "Agente Gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Instrucciones"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c7d2cc83-47b0-4389-aa0e-5c862cdf28b7",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Instrucciones }}",
+        "options": {
+          "systemMessage": "Eres el asistente personal de Dayanna Rocca, una emprendedora fundador de una agencia de automatización con IA.\nTú tarea es hacer uso de las herramientas disponibles para ayudarle a gestionar su bandeja de entrada de gmail en base a las instrucciones que se te de\nHerramientas\nTienes acceso a las siguientes herramientas:\n1- Enviar correo\nUsa esta herramienta cuando se te pida enviar un correo y se te provea una dirección para enviarlo.\nDebes redactar el asunto del correo y el mensaje según las instrucciones.\n2- Buscar correos\nUsa esta herramienta para generar una búsqueda válida dentro de gmail según los criterios especificados en las instrucciones y devolver los resultados obtenidos.\nTambién debes usar esta función para obtener los ID's de algún correo en caso de que otra herramienta lo necesite\n3- Buscar etiquetas\nUtiliza esta herramienta para ver todas las etiquetas disponibles en la bandeja de Jaime y encontrar sus respectivos ID's\n4- Etiquetar correo\nUtiliza esta herramienta para aplicar una etiqueta a un correo. Necesitarás:\nMessage ID (ID del correo, encontrada usando la herramienta \"Buscar correos\")\nLabel ID (ID de la etiqueta, encontrada usando la herramienta \"buscar etiquetas\")"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a38ef19e-a0db-4dac-8b93-9524730f5a55",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        192
+      ],
+      "id": "d295c8dc-235c-4744-9553-2be01fa0e8c4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "9PVx7iEnx9WCTBab",
+          "name": "Google Gemini(PaLM) Api n8n06"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', `Dirección de correo electrónico del destinatario`, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', `Asunto del correo`, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `Contenido del mensaje del correo.\nSiempre firma usando el nombre de Dayanna Rocca`, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        400
+      ],
+      "id": "eaeff10b-73b7-4f54-b62b-7aa477aa762a",
+      "name": "Enviar Correo",
+      "webhookId": "b1c2e0ba-c7e7-4227-bf02-6fa12a1d6114",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Hc6CnQeunKXEIjDb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "filters": {
+          "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search', `Genera una consulta de búsqueda válida para Gmail que permita encontrar correos electrónicos específicos según la intención del usuario.\\\\n\\\\nLa búsqueda debe usar exclusivamente la sintaxis nativa de Gmail (search operators) y ser lo más precisa y minimalista posible.\\\\n\\\\n#Qué puede incluir la búsqueda\\\\nUsa solo los operadores necesarios, por ejemplo:\\\\n- from: → remitente\\\\n- to: → destinatario\\\\n- subject: → palabras en el asunto\\\\n- has:attachment → correos con adjuntos\\\\n- is:unread / is:read\\\\n- after: / before: (formato YYYY/MM/DD)\\\\n- Palabras clave simples (sin operador) para buscar en el contenido\\\\n\\\\n#Ejemplos válidos:\\\\n- from:diego.hernandez@ejemplo.com\\\\n- from:diego subject:reunión\\\\n- is:unread from:google\\\\n- after:2024/01/01 before:2024/02/01 factura\\\\n- has:attachment contrato\\\\n\\\\n#Reglas críticas\\\\n- No expliques la búsqueda.\\\\n- No incluyas texto natural, solo la query.\\\\n- No inventes operadores.\\\\n- No uses comillas innecesarias.\\\\n- Combina operadores solo si aporta valor.\\\\n- Si el usuario no especifica criterios claros, usa la búsqueda más general posible (por ejemplo, solo una palabra clave o from:).`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        400
+      ],
+      "id": "5de2e792-5a0c-4ec7-9b04-8ea8dc8fc5e2",
+      "name": "Buscar Correos",
+      "webhookId": "30cc47c1-075f-498d-b2c3-e8e097da4166",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Hc6CnQeunKXEIjDb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        400
+      ],
+      "id": "cdffb650-eb31-40c7-9ce8-ccf90917083a",
+      "name": "Buscar etiquetas",
+      "webhookId": "e221e3e2-6cf7-4812-98f2-873a7b472715",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Hc6CnQeunKXEIjDb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_ID', `ID del correo`, 'string') }}",
+        "labelIds": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Label_Names_or_IDs', `ID de la etiqueta`, 'string') }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        752,
+        400
+      ],
+      "id": "daa0c664-cb70-4dfb-a360-ab3824161c9e",
+      "name": "Aplicar Etiquetas",
+      "webhookId": "3f3a31d8-3c07-4c63-994f-9c99fe9109c6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Hc6CnQeunKXEIjDb",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Instrucciones": " "
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Correo": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Correos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar etiquetas": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aplicar Etiquetas": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "37e250db-3343-418e-b3db-2825fb7b2629",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "83af5ede91c060c33f923d9414313d157b5054d4f584139d322e95913d816859"
+  },
+  "id": "wo3xoDBsOKz6pHPd",
+  "tags": []
+}
