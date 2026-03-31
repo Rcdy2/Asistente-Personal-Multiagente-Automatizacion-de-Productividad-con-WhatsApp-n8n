@@ -78,7 +78,7 @@ Con el asistente IA, el flujo se transforma:
 
 ## Comparación de mejoras en los procesos
 
-![Comparación flujos AS-IS vs TO-BE](docs/imagenes/flujo_comparativo.png)
+![](icon_repo/ASISyTOBE.png)
 
 La imagen integra ambos flujos mostrando la reducción de pasos manuales y la eliminación del trabajo repetitivo. El asistente centraliza todas las decisiones y la ejecución, liberando al usuario para tareas de mayor valor.
 
